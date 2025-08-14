@@ -67,7 +67,7 @@ if st.button("🔍 Buscar CTOs Disponíveis em até 200m"):
             for _, cand in df_candidatas.iterrows():
                 coord_cand = (cand["latitude"], cand["longitude"])
                 distancia = geodesic(coord_inv, coord_cand).meters
-                if distancia <= 250:
+                if distancia <= 200:
                     cand_copy = cand.copy()
                     cand_copy["possível_troca"] = f"{nome_cto_inv}  --->  {cand_copy['cto']}"
                     resultados.append(cand_copy)
@@ -81,4 +81,5 @@ if st.button("🔍 Buscar CTOs Disponíveis em até 200m"):
             st.dataframe(df_resultado)
         else:
             st.info("❌ Nenhuma CTO com 8 portas e caminho < 128 encontrada a até 200m das CTOs inválidas.")
+
 
