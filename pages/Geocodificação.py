@@ -62,7 +62,7 @@ if st.button("Buscar endereços"):
                     if show_neighborhood and bairro:
                         parts.append(bairro)
                     if cep:
-                        parts.append(f"CEP: {cep}")
+                        parts.append(cep)  # <- CEP agora sai sem o prefixo "CEP:"
                     if show_city and cidade:
                         parts.append(cidade)
 
