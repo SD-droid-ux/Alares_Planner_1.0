@@ -11,7 +11,7 @@ show_street = st.checkbox("Rua", value=True)
 show_neighborhood = st.checkbox("Bairro", value=True)
 show_city = st.checkbox("Cidade", value=True)
 
-input_text = st.text_area("Cole latitudes e longitudes (ex: -5.9396, -35.2512)", height=150)
+input_text = st.text_area("Cole latitudes e longitudes (ex: -22.57285025800945 -47.401019785207 ou -22.57285025800945, -47.401019785207)", height=150)
 
 if st.button("Buscar endereços"):
 
@@ -24,9 +24,10 @@ if st.button("Buscar endereços"):
 
         for i, coord in enumerate(coords_list, start=1):
             try:
-                parts = coord.split(",")
+                # Aceita vírgula ou espaço como separador
+                parts = coord.replace(",", " ").split()
                 if len(parts) != 2:
-                    st.warning(f"{i}. Entrada inválida: **{coord}**. Use o formato correto: `latitude, longitude` (ex: `-5.9473, -35.2567`)")
+                    st.warning(f"{i}. Entrada inválida: **{coord}**. Use o formato correto: `latitude longitude` ou `latitude, longitude`")
                     continue
 
                 lat = float(parts[0].strip())
@@ -37,7 +38,7 @@ if st.button("Buscar endereços"):
                 if results:
                     address_components = results[0]["address_components"]
 
-                    street = bairro = cidade = ""
+                    street = bairro = cidade = cep = ""
 
                     for comp in address_components:
                         types = comp["types"]
@@ -49,6 +50,8 @@ if st.button("Buscar endereços"):
                             cidade = comp["long_name"]
                         elif "administrative_area_level_2" in types and not cidade:
                             cidade = comp["long_name"]
+                        if "postal_code" in types:
+                            cep = comp["long_name"]
 
                     if street == "" or street.lower() == "unnamed road":
                         street = "Rua sem nome"
@@ -58,6 +61,8 @@ if st.button("Buscar endereços"):
                         parts.append(street)
                     if show_neighborhood and bairro:
                         parts.append(bairro)
+                    if cep:
+                        parts.append(f"CEP: {cep}")
                     if show_city and cidade:
                         parts.append(cidade)
 
